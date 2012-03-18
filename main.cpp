@@ -29,11 +29,11 @@ int main(int argc, char **argv) {
                     i++;
                 } else {
                     cout << "El valor de tiempo indicado es invalido\n";
-                    cout << "Sintaxis correcta: gsc1 [opciones] <instancia>\n";
+                    cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
                     return EXIT_FAILURE;
                 }
             } else if (strcmp("-d", argv[i]) != 0) {
-                cout << "Sintaxis correcta: gsc1 [opciones] <instancia>\n";
+                cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
                 return EXIT_FAILURE;
             }
         }
@@ -60,7 +60,8 @@ int main(int argc, char **argv) {
             return EXIT_FAILURE;
         }
     } else {
-        cout << ("El numero de argumentos es incorrecto\n");
+        cout << "El numero de argumentos es incorrecto\n";
+        cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
