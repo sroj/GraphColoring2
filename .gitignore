@@ -1,0 +1,7 @@
+*.[oa]
+bin/
+*.layout*
+obj/
+build/
+/dist/Debug/
+/dist/Release/
