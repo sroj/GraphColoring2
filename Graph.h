@@ -377,6 +377,13 @@ public:
         copyFinalToNodesArray();
         return (clock() - startTime) / (double) CLOCKS_PER_SEC;
     }
+    
+    double Brelaz(int tmax){
+        
+    }
+    double BrownLookAhead(int tmax){
+        
+    }
 
 private:
 
@@ -612,6 +619,7 @@ private:
             *(nodesArray[i]) = *(finalColorationBrown[i]);
         }
     }
+
 };
 #endif	/* GRAPH_H */
 

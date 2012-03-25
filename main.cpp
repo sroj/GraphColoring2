@@ -8,9 +8,8 @@
 using namespace std;
 
 //Enumeracion que representa el tipo de algoritmo a utilizar
-
 enum algoritmo_t {
-    dsatur, brown
+    dsatur, brown, brelaz, brown_look_ahead
 };
 
 int main(int argc, char **argv) {
@@ -32,7 +31,12 @@ int main(int argc, char **argv) {
                     cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
                     return EXIT_FAILURE;
                 }
-            } else if (strcmp("-d", argv[i]) != 0) {
+            } else if(strcmp("-z", argv[i]) == 0){
+                algoritmo = brelaz;
+            } else if(strcmp("-k", argv[i]) == 0){
+                algoritmo = brown_look_ahead;
+            } 
+            else if (strcmp("-d", argv[i]) != 0) {
                 cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
                 return EXIT_FAILURE;
             }
@@ -44,9 +48,12 @@ int main(int argc, char **argv) {
 
             if (algoritmo == dsatur) {
                 executionTime = grafo.Dsatur(tmax);
-            } else {
+            } else if(algoritmo == brown){
                 executionTime = grafo.Brown(tmax);
-
+            } else if(algoritmo == brelaz){
+                executionTime = grafo.Brelaz(tmax);
+            } else{
+                executionTime = grafo.BrownLookAhead(tmax);
             }
 
             if (executionTime != -1) {
