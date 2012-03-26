@@ -15,7 +15,7 @@
 class GraphNode {
 public:
 
-    GraphNode() : color(0), saturationDegree(0), degree(0), label(0) {
+    GraphNode() : color(0), saturationDegree(0), degree(0), label(0), in_clique(false), label_brelaz(0) {
     };
 
     //Copy constructor
@@ -25,6 +25,8 @@ public:
         saturationDegree = orig.saturationDegree;
         degree = orig.degree;
         label = orig.label;
+        label_brelaz = orig.label_brelaz;
+        in_clique = orig.in_clique;
     };
 
     int GetSaturationDegree() const {
@@ -62,6 +64,22 @@ public:
     void SetLabel(int label) {
         this->label = label;
     }
+    
+    void SetLabelBrelaz(int label) {
+        this->label_brelaz = label;
+    }
+    
+    int GetLabelBrelaz() const {
+        return label_brelaz;
+    }
+    
+    void SetInClique(bool in){
+        this->in_clique = in;
+    }
+    
+    bool GetInClique(){
+        return in_clique;
+    }
 
     //Operador ++
     //Se redefine para que incremente en 1 el grado del nodo
@@ -84,6 +102,10 @@ private:
 
     //Etiqueta del nodo
     int label;
+    
+    bool in_clique;
+    
+    int label_brelaz;
 };
 #endif	/* GRAPHNODE_H */
 

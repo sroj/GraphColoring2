@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     //Lectura de parametros de la consola
     if (argc >= 2 && argc <= 5) {
         algoritmo_t algoritmo = dsatur;
-        int tmax = 15 * 60;
+        int tmax = 60 * 60;
 
         for (int i = 1; i < argc - 1; i++) {
             if (strcmp("-b", argv[i]) == 0) {
@@ -45,13 +45,13 @@ int main(int argc, char **argv) {
         try {
             double executionTime;
             Graph grafo(argv[argc - 1]);
-
             if (algoritmo == dsatur) {
                 executionTime = grafo.Dsatur(tmax);
             } else if(algoritmo == brown){
                 executionTime = grafo.Brown(tmax);
             } else if(algoritmo == brelaz){
-                executionTime = grafo.Brelaz(tmax);
+                Graph grafo2(argv[argc - 1]);
+                executionTime = grafo.Brelaz(tmax, grafo2);
             } else{
                 executionTime = grafo.BrownLookAhead(tmax);
             }

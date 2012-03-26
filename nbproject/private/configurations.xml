@@ -28,8 +28,12 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d </runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -b g-20-d-0.7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"  g-20-d-0.7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"  -b 1</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" 1</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z 1</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -b g-20-d-0.7.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -z 1</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
