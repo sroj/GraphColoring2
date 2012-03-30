@@ -307,7 +307,7 @@ public:
         clock_t startTime = clock();
         clock_t endTime;
         clock_t insideTime;
-
+        cout << "hola" << endl;
         setColorDsatur(nodesDegreeSortedArray[0]->GetLabel(), 1);
         while (numColored < numNodes) {
             const vector<GraphNode*>* maximalSaturation =
@@ -408,22 +408,22 @@ public:
     void setColorationOrderBrelaz(Graph& grafo2) {
         for (int i = 0; i < numNodes; i++) {
             colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
+           
         }
     }
 
     bool hasLowerRank(GraphNode* node, int k) {
-        const vector<GraphNode*> *adyacents = neighbors(node->GetLabel());
-        for (int i = 0; i < adyacents->size(); i++) {
-            for (int j = 0; j < k; j++) {
-                if ((*adyacents)[i]->GetLabel() == colorationOrder[j]->GetLabel()) {
-                    return true;
-                }
+        for(int i=0; i<k; i++){
+            if((colorationOrder[i]->GetLabel())== (node->GetLabel())){
+                return true;
             }
         }
+        
         return false;
     }
 
     void GetFeasibleColors(GraphNode* node_xk, int uk, int q, int k) {
+        
         int min;
         if (uk + 1 <= q - 1) {
             min = uk + 1;
@@ -443,7 +443,9 @@ public:
                 usedColors[(*adyacents)[i]->GetColor() - 1] = true;
             }
         }
+        //cout << "recalculando lista de nodo " << k << endl;
         //cout << min << "<-- min " << endl;
+        allowedColors[k - 1]->clear();
         for (int i = 0; i < min; i++) {
             if (usedColors[i] == false) {
                 allowedColors[k - 1]->push_back(i + 1);
@@ -508,6 +510,7 @@ public:
         int w = clique.size();
         setColorationOrderBrelaz(grafo2);
         bool back = false;
+
         int k = w + 1;
 
         if (w == q) {
@@ -515,45 +518,45 @@ public:
             exit(0);
         }
         //medir tiempo
-
+        //cout << "clique" << endl;
         for (int i = 0; i < w; i++) {
             colorationOrder[i]->SetColor(i + 1);
             colorationOrder[i]->SetLabelBrelaz(k);
+//            cout << colorationOrder[i]->GetLabel() << "  ";
+//            cout << colorationOrder[i]->GetColor() << endl;
         }
 
         while (true) {
 
             if (!back) {
                 int uk = getNumberOfColorsActual(k - 1);
-
-                allowedColors[k - 1]->clear();
+                //cout << "Numero de colores de la sol parcial u" << k << "-1: " << uk << endl;
                 GetFeasibleColors(colorationOrder[k - 1], uk, q, k);
                 // cout << "este es el color" << allowedColors[k-1]->front() << endl;
 
                 //cout << "este es el nodo" << colorationOrder[k-1]->GetLabel() << endl;
                 // exit(0);
             } else {
+
                 // GetFeasibleColors(colorationOrder[k - 1], getNumberOfColors(), q, colors);
                 allowedColors[k - 1]->remove(colorationOrder[k - 1]->GetColor());
                 colorationOrder[k - 1]->SetLabelBrelaz(0);
             }
-            bool prueba = false;
-            if (!allowedColors[k - 1]->empty()) {
-                int color = allowedColors[k - 1]->front();
-                if (color <= (getNumberOfColorsActual(k - 1) + 1) && color <= q - 1) {
-                    prueba = true;
-                }
-            }
 
-            if (!allowedColors[k - 1]->empty() && prueba) {
+
+            if (!allowedColors[k - 1]->empty() &&
+                    (allowedColors[k - 1]->front() < q)) {
                 allowedColors[k - 1]->sort();
+
                 colorationOrder[k - 1]->SetColor(allowedColors[k - 1]->front());
 
-                //  cout << "pinto " << colorationOrder[k - 1]->GetLabel() << "de " << colorationOrder[k - 1]->GetColor() << endl;
+
+
+                //cout << k << " pinto " << colorationOrder[k - 1]->GetLabel() << "de " << colorationOrder[k - 1]->GetColor() << endl;
 
                 k++;
                 if (k > numNodes) {
-
+                    copyNodesArrayBrelaz();
                     q = getNumberOfColors();
                     if (q == w) {
                         //medir tiempo, restar
@@ -561,39 +564,48 @@ public:
                             grafo2.printOutput(cout, t);
                             exit(0);
                         }
-
-
                         cout << "caso 1" << endl;
+                        copyFinalToNodesArrayBrelaz();
                         return (tmax);
                     }
                     //Se puede mejorar colocando int i= w-1
-                    bool found = false;
-                    for (int i = 0; i < numNodes && !found; i++) {
+
+                    for (int i = 0; i < numNodes; i++) {
                         if (colorationOrder[i]->GetColor() == q) {
                             k = i + 1; //revisar
-                            found = true;
+                            break;
                         }
                     }
+                    //cout << "Solucion completa, q-colored rank: " << k << endl;
                     for (int i = k - 1; i < numNodes; i++) {
                         colorationOrder[i]->SetLabelBrelaz(0);
                     }
                     back = true;
+                  // cout << endl << endl << "---------------HAGO BACK POR"
+                  //          " SOL COMPLETA-------------------" << endl <<endl;
                 } else {
                     back = false;
                 }
             } else {
                 back = true;
+               // cout << "hago back porque me quedé sin colores " << k << endl;
             }
             if (back) {
+
                 Label(colorationOrder[k - 1], k - 1);
                 k = maximalRankLabeled(k - 1);
+                //cout << "Saltando a nodo " << k << endl;
+                for (int i = k; i < numNodes; i++) {
+                    allowedColors[i]->clear();
+                }
                 if (k <= w) {
                     //Calcular tiempo
-                    cout << "caso 2" << endl;
+                    //cout << "caso 2" << endl;
                     if (has()) {
                         grafo2.printOutput(cout, t);
                         exit(0);
                     }
+                    copyFinalToNodesArrayBrelaz();
                     return (tmax);
                 }
             }
@@ -843,6 +855,18 @@ private:
         }
     }
 
+
+    //Metodo helper para el algoritmo de Brelaz.
+    //Copia el contenido del arreglo de nodos principal (nodesArray), al
+    //arreglo finalColorationBrown, para almacenar un nueva mejor solucion
+    //encontrada por el algoritmo de Brelaz.
+
+    void copyNodesArrayBrelaz() {
+        for (int i = 0; i < numNodes; i++) {
+            *(finalColorationBrown[i]) = *(colorationOrder[i]);
+        }
+    }
+
     //Metodo helper para el algoritmo de Brown.
     //Copia el contenido del arreglo finalColorationBrown, al
     //arreglo nodesArray, para almacenar la mejor solucion final encontrada por
@@ -851,6 +875,18 @@ private:
     void copyFinalToNodesArray() {
         for (int i = 0; i < numNodes; i++) {
             *(nodesArray[i]) = *(finalColorationBrown[i]);
+        }
+    }
+
+
+    //Metodo helper para el algoritmo de Brown.
+    //Copia el contenido del arreglo finalColorationBrown, al
+    //arreglo nodesArray, para almacenar la mejor solucion final encontrada por
+    //el algoritmo de Brown.
+
+    void copyFinalToNodesArrayBrelaz() {
+        for (int i = 0; i < numNodes; i++) {
+            *(colorationOrder[i]) = *(finalColorationBrown[i]);
         }
     }
 

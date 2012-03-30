@@ -24,7 +24,6 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel4.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel5.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel6.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel7.col</runcommandpicklistitem>
@@ -34,10 +33,12 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z huck.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z games120.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen6_6.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen8_12.col</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -z queen6_6.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -z queen8_12.col</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
+        <console-type>2</console-type>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>
         <environment>
