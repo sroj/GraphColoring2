@@ -28,14 +28,14 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel6.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel7.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen5_5.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen7_7.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z 32</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z huck.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z games120.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen6_6.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen8_12.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen6_6.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen7_7.col</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -z queen8_12.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -z queen7_7.col</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>
@@ -70,8 +70,12 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d </runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z 32</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z ejemplo1</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z ejemplo2</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen7_7.col</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -z queen7_7.col</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
