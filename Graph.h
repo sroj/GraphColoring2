@@ -1,6 +1,6 @@
 /* 
  * File:   Graph.h
- * Author: simonr
+ * Author: Simon Rojas & Marlin Aranguren
  *
  * Created on March 17, 2012, 9:30 PM
  */
@@ -91,7 +91,6 @@ public:
     }
 
     //Destructor
-
     virtual ~Graph() {
         for (int i = 0; i < numNodes; i++) {
             delete(adjacencyArray[i]);
@@ -286,15 +285,7 @@ public:
         return max;
     }
 
-    int getNumberOfColorsActual(int k) {
-        int max = 0;
-        for (int i = 0; i < k; i++) {
-            if (colorationOrder[i]->GetColor() > max) {
-                max = colorationOrder[i]->GetColor();
-            }
-        }
-        return max;
-    }
+
 
     //Esta función recibe el tiempo máximo de ejecución del algoritmo Dsatur.
     //Retorna un double que representa el tiempo que se tardó el algoritmo en
@@ -307,7 +298,6 @@ public:
         clock_t startTime = clock();
         clock_t endTime;
         clock_t insideTime;
-        cout << "hola" << endl;
         setColorDsatur(nodesDegreeSortedArray[0]->GetLabel(), 1);
         while (numColored < numNodes) {
             const vector<GraphNode*>* maximalSaturation =
@@ -393,116 +383,6 @@ public:
         return (clock() - startTime) / (double) CLOCKS_PER_SEC;
     }
 
-    list<GraphNode*> GetClique(Graph& grafo2) {
-        list<GraphNode*> clique;
-        for (int i = 0; i < numNodes; i++) {
-            clique.push_back(nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]);
-            nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]->SetInClique(true);
-            if (grafo2.colorationOrder[i + 1]->GetColor() <= grafo2.colorationOrder[i]->GetColor()) {
-                break;
-            }
-        }
-        return clique;
-    }
-
-    void setColorationOrderBrelaz(Graph& grafo2) {
-        for (int i = 0; i < numNodes; i++) {
-            colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
-            *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
-        }
-    }
-
-    bool hasLowerRank(GraphNode* node, int k) {
-        for(int i=0; i<k; i++){
-            if((colorationOrder[i]->GetLabel())== (node->GetLabel())){
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    void GetFeasibleColors(GraphNode* node_xk, int uk, int q, int k) {
-        
-        int min;
-        if (uk + 1 <= q - 1) {
-            min = uk + 1;
-        } else {
-            min = q - 1;
-        }
-
-        bool usedColors[min];
-        for (int i = 0; i < min; i++) {
-            usedColors[i] = false;
-        }
-
-
-        const vector<GraphNode*> *adyacents = neighbors(node_xk->GetLabel());
-        for (int i = 0; i < adyacents->size(); i++) {
-            if ((*adyacents)[i]->GetColor() != 0 && hasLowerRank((*adyacents)[i], k - 1)) {
-                usedColors[(*adyacents)[i]->GetColor() - 1] = true;
-            }
-        }
-        //cout << "recalculando lista de nodo " << k << endl;
-        //cout << min << "<-- min " << endl;
-        allowedColors[k - 1]->clear();
-        for (int i = 0; i < min; i++) {
-            if (usedColors[i] == false) {
-                allowedColors[k - 1]->push_back(i + 1);
-                //  cout << "este es el color buuuuuuu" << colors.back() << endl;
-                //  cout << "este es el nodo" << node_xk->GetLabel() << endl;
-            }
-        }
-
-    }
-
-    bool isAdyacent(GraphNode* node1, GraphNode* node2) {
-        const vector<GraphNode*> *adjacents = neighbors(node1->GetLabel());
-        bool found = false;
-        for (int i = 0; i < adjacents->size() && !found; i++) {
-            if ((*adjacents)[i]->GetLabel() == node2->GetLabel()) {
-                found = true;
-                // cout << node1->GetLabel() << "es adyacente " << node2->GetLabel() << endl;
-            }
-        }
-        return found;
-    }
-
-    void Label(GraphNode* node_xk, int position) {
-        int numColors = getNumberOfColorsActual(position);
-        bool usedColors[numColors];
-        for (int i = 0; i < numColors; i++) {
-            usedColors[i] = false;
-        }
-
-        for (int i = 0; i < position; i++) {
-            if (colorationOrder[i]->GetLabelBrelaz() == 0 && isAdyacent(node_xk, colorationOrder[i])) {
-                if (usedColors[colorationOrder[i]->GetColor() - 1] == false) {
-                    colorationOrder[i]->SetLabelBrelaz(position + 1);
-                    usedColors[colorationOrder[i]->GetColor() - 1] = true;
-                }
-            }
-        }
-    }
-
-    bool has() {
-        for (int i = 0; i < numNodes; i++) {
-            if (nodesArray[i]->GetColor() == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    int maximalRankLabeled(int k) {
-        for (int i = k; i >= 0; i--) {
-            if (colorationOrder[i]->GetLabelBrelaz() != 0) {
-                return i + 1;
-            }
-        }
-
-    }
-
     double Brelaz(int tmax, Graph& grafo2) {
         double t = grafo2.Dsatur(tmax);
         int q = grafo2.getNumberOfColors();
@@ -516,6 +396,7 @@ public:
             copyFinalToNodesArrayBrelaz();
             return(t);
         }
+        
         clock_t startTime = clock();
         for (int i = 0; i < w; i++) {
             colorationOrder[i]->SetColor(i + 1);
@@ -847,6 +728,115 @@ private:
     void copyFinalToNodesArrayBrelaz() {
         for (int i = 0; i < numNodes; i++) {
             *(colorationOrder[i]) = *(finalColorationBrown[i]);
+        }
+    }
+    
+    list<GraphNode*> GetClique(Graph& grafo2) {
+        list<GraphNode*> clique;
+        for (int i = 0; i < numNodes; i++) {
+            clique.push_back(nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]);
+            nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]->SetInClique(true);
+            if (grafo2.colorationOrder[i + 1]->GetColor() <= grafo2.colorationOrder[i]->GetColor()) {
+                break;
+            }
+        }
+        return clique;
+    }
+
+    void setColorationOrderBrelaz(Graph& grafo2) {
+        for (int i = 0; i < numNodes; i++) {
+            colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
+            *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
+        }
+    }
+
+    bool hasLowerRank(GraphNode* node, int k) {
+        for(int i=0; i<k; i++){
+            if((colorationOrder[i]->GetLabel())== (node->GetLabel())){
+                return true;
+            }
+        }    
+        return false;
+    }
+    
+    int getNumberOfColorsActual(int k) {
+        int max = 0;
+        for (int i = 0; i < k; i++) {
+            if (colorationOrder[i]->GetColor() > max) {
+                max = colorationOrder[i]->GetColor();
+            }
+        }
+        return max;
+    }
+
+    void GetFeasibleColors(GraphNode* node_xk, int uk, int q, int k) {       
+        int min;
+        if (uk + 1 <= q - 1) {
+            min = uk + 1;
+        } else {
+            min = q - 1;
+        }
+        bool usedColors[min];
+        for (int i = 0; i < min; i++) {
+            usedColors[i] = false;
+        }
+        const vector<GraphNode*> *adyacents = neighbors(node_xk->GetLabel());
+        for (int i = 0; i < adyacents->size(); i++) {
+            if ((*adyacents)[i]->GetColor() != 0 && hasLowerRank((*adyacents)[i], k - 1)) {
+                usedColors[(*adyacents)[i]->GetColor() - 1] = true;
+            }
+        }
+        allowedColors[k - 1]->clear();
+        for (int i = 0; i < min; i++) {
+            if (usedColors[i] == false) {
+                allowedColors[k - 1]->push_back(i + 1);
+            }
+        }
+    }
+
+    bool isAdyacent(GraphNode* node1, GraphNode* node2) {
+        const vector<GraphNode*> *adjacents = neighbors(node1->GetLabel());
+        bool found = false;
+        for (int i = 0; i < adjacents->size() && !found; i++) {
+            if ((*adjacents)[i]->GetLabel() == node2->GetLabel()) {
+                found = true;
+                // cout << node1->GetLabel() << "es adyacente " << node2->GetLabel() << endl;
+            }
+        }
+        return found;
+    }
+
+    void Label(GraphNode* node_xk, int position) {
+        int numColors = getNumberOfColorsActual(position);
+        bool usedColors[numColors];
+        for (int i = 0; i < numColors; i++) {
+            usedColors[i] = false;
+        }
+
+        for (int i = 0; i < position; i++) {
+            if (colorationOrder[i]->GetLabelBrelaz() == 0 && isAdyacent(node_xk, colorationOrder[i])) {
+                if (usedColors[colorationOrder[i]->GetColor() - 1] == false) {
+                    colorationOrder[i]->SetLabelBrelaz(position + 1);
+                    usedColors[colorationOrder[i]->GetColor() - 1] = true;
+                }
+            }
+        }
+    }
+
+    bool has() {
+        for (int i = 0; i < numNodes; i++) {
+            if (nodesArray[i]->GetColor() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int maximalRankLabeled(int k) {
+        for (int i = k; i >= 0; i--) {
+            if (colorationOrder[i]->GetLabelBrelaz() != 0) {
+                return i + 1;
+            }
         }
     }
 

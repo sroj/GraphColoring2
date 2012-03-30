@@ -70,12 +70,12 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d </runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z 32</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z ejemplo1</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z ejemplo2</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen7_7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z 32</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -z queen7_7.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -z 32</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
