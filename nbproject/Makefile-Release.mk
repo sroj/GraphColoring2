@@ -84,7 +84,7 @@ ${OBJECTDIR}/GraphNode.o: GraphNode.cpp
 ${OBJECTDIR}/batch.o: batch.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/batch.o batch.cpp
+	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/batch.o batch.cpp
 
 ${OBJECTDIR}/CompareLabelFunctor.o: CompareLabelFunctor.cpp 
 	${MKDIR} -p ${OBJECTDIR}
