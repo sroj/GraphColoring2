@@ -37,6 +37,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Graph.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/GraphNode.o \
+	${OBJECTDIR}/batch.o \
 	${OBJECTDIR}/CompareLabelFunctor.o \
 	${OBJECTDIR}/CompareDegreeFunctor.o
 
@@ -79,6 +80,11 @@ ${OBJECTDIR}/GraphNode.o: GraphNode.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/GraphNode.o GraphNode.cpp
+
+${OBJECTDIR}/batch.o: batch.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/batch.o batch.cpp
 
 ${OBJECTDIR}/CompareLabelFunctor.o: CompareLabelFunctor.cpp 
 	${MKDIR} -p ${OBJECTDIR}
