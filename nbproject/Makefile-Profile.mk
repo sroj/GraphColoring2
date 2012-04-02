@@ -22,7 +22,7 @@ AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Release
+CND_CONF=Profile
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 
@@ -37,7 +37,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/Graph.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/GraphNode.o \
-	${OBJECTDIR}/batch.o \
 	${OBJECTDIR}/CompareLabelFunctor.o \
 	${OBJECTDIR}/CompareDegreeFunctor.o
 
@@ -46,8 +45,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-pg
+CXXFLAGS=-pg
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -64,37 +63,32 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/gcs2: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/gcs2 ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -pg -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/gcs2 ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/Graph.o: Graph.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Graph.o Graph.cpp
+	$(COMPILE.cc) -MMD -MP -MF $@.d -o ${OBJECTDIR}/Graph.o Graph.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/GraphNode.o: GraphNode.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/GraphNode.o GraphNode.cpp
-
-${OBJECTDIR}/batch.o: batch.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/batch.o batch.cpp
+	$(COMPILE.cc) -MMD -MP -MF $@.d -o ${OBJECTDIR}/GraphNode.o GraphNode.cpp
 
 ${OBJECTDIR}/CompareLabelFunctor.o: CompareLabelFunctor.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CompareLabelFunctor.o CompareLabelFunctor.cpp
+	$(COMPILE.cc) -MMD -MP -MF $@.d -o ${OBJECTDIR}/CompareLabelFunctor.o CompareLabelFunctor.cpp
 
 ${OBJECTDIR}/CompareDegreeFunctor.o: CompareDegreeFunctor.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CompareDegreeFunctor.o CompareDegreeFunctor.cpp
+	$(COMPILE.cc) -MMD -MP -MF $@.d -o ${OBJECTDIR}/CompareDegreeFunctor.o CompareDegreeFunctor.cpp
 
 # Subprojects
 .build-subprojects:

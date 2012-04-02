@@ -1,7 +1,9 @@
 *.[oa]
 bin/
-*.layout*
-obj/
 build/
-/dist/Debug/
-/dist/Release/
+dist/
+/dnskma.txt
+/gmon.out
+/prof1.txt
+/simon
+/nbproject/private/

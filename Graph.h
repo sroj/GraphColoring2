@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Graph.h
  * Author: Simon Rojas & Marlin Aranguren
  *
@@ -76,6 +76,7 @@ public:
                     nodesDegreeSortedArray = new GraphNode* [numNodes];
                     finalColorationBrown = new GraphNode* [numNodes];
                     allowedColors = new list<int>* [numNodes];
+                    greedyOrdering = new GraphNode* [numNodes];
                     initializeNodesArrays();
                     initializeAdjancencyArray();
                     initializeAllowedColors();
@@ -88,6 +89,7 @@ public:
         instancia.close();
         uncoloredNodes = new list<GraphNode*> (nodesArray, nodesArray + numNodes);
         sortNodesByDegree();
+        initializeBrownGreedyOrderArray();
     }
 
     //Destructor
@@ -372,15 +374,132 @@ public:
 
             if (nodeLabel == numNodes) {
                 backtracking = false;
-                continue;
             } else {
                 backtracking = true;
-                continue;
             }
         }
 
         copyFinalToNodesArray();
         return (clock() - startTime) / (double) CLOCKS_PER_SEC;
+    }
+
+    list<GraphNode*> GetClique(Graph& grafo2) {
+        list<GraphNode*> clique;
+        for (int i = 0; i < numNodes; i++) {
+            clique.push_back(nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]);
+            nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]->SetInClique(true);
+            if (grafo2.colorationOrder[i + 1]->GetColor() <= grafo2.colorationOrder[i]->GetColor()) {
+                break;
+            }
+        }
+        return clique;
+    }
+
+    void setColorationOrderBrelaz(Graph& grafo2) {
+        for (int i = 0; i < numNodes; i++) {
+            colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
+
+        }
+    }
+
+    bool hasLowerRank(GraphNode* node, int k) {
+        int nodeLabel = node->GetLabel();
+        for (int i = 0; i < k; i++) {
+            if ((colorationOrder[i]->GetLabel()) == nodeLabel) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //    bool hasLowerRankBrown(GraphNode* node, int k) {
+    //        int nodeLabel = node->GetLabel();
+    //        for (int i = 0; i < k; i++) {
+    //            if ((greedyOrdering[i]->GetLabel()) == nodeLabel) {
+    //                return true;
+    //            }
+    //        }
+    //        return false;
+    //    }
+
+    void GetFeasibleColors(GraphNode* node_xk, int uk, int q, int k) {
+
+        int min;
+        if (uk + 1 <= q - 1) {
+            min = uk + 1;
+        } else {
+            min = q - 1;
+        }
+
+        bool usedColors[min];
+        for (int i = 0; i < min; i++) {
+            usedColors[i] = false;
+        }
+
+
+        const vector<GraphNode*> *adyacents = neighbors(node_xk->GetLabel());
+        for (int i = 0; i < adyacents->size(); i++) {
+            if ((*adyacents)[i]->GetColor() != 0 && hasLowerRank((*adyacents)[i], k - 1)) {
+                usedColors[(*adyacents)[i]->GetColor() - 1] = true;
+            }
+        }
+        //cout << "recalculando lista de nodo " << k << endl;
+        //cout << min << "<-- min " << endl;
+        allowedColors[k - 1]->clear();
+        for (int i = 0; i < min; i++) {
+            if (usedColors[i] == false) {
+                allowedColors[k - 1]->push_back(i + 1);
+                //  cout << "este es el color buuuuuuu" << colors.back() << endl;
+                //  cout << "este es el nodo" << node_xk->GetLabel() << endl;
+            }
+        }
+
+    }
+
+    bool isAdyacent(GraphNode* node1, GraphNode* node2) {
+        const vector<GraphNode*>* adjacents = neighbors(node1->GetLabel());
+        int nodeLabel = node2->GetLabel();
+        for (int i = 0; i < adjacents->size(); i++) {
+            if ((*adjacents)[i]->GetLabel() == nodeLabel) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void Label(GraphNode* node_xk, int position) {
+        int numColors = getNumberOfColorsActual(position);
+        bool usedColors[numColors];
+        for (int i = 0; i < numColors; i++) {
+            usedColors[i] = false;
+        }
+
+        for (int i = 0; i < position; i++) {
+            if (colorationOrder[i]->GetLabelBrelaz() == 0 && isAdyacent(node_xk, colorationOrder[i])) {
+                if (usedColors[colorationOrder[i]->GetColor() - 1] == false) {
+                    colorationOrder[i]->SetLabelBrelaz(position + 1);
+                    usedColors[colorationOrder[i]->GetColor() - 1] = true;
+                }
+            }
+        }
+    }
+
+    bool has() {
+        for (int i = 0; i < numNodes; i++) {
+            if (nodesArray[i]->GetColor() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int maximalRankLabeled(int k) {
+        for (int i = k; i >= 0; i--) {
+            if (colorationOrder[i]->GetLabelBrelaz() != 0) {
+                return i + 1;
+            }
+        }
+
     }
 
     double Brelaz(int tmax, Graph& grafo2) {
@@ -401,6 +520,8 @@ public:
         for (int i = 0; i < w; i++) {
             colorationOrder[i]->SetColor(i + 1);
             colorationOrder[i]->SetLabelBrelaz(k);
+            //            cout << colorationOrder[i]->GetLabel() << "  ";
+            //            cout << colorationOrder[i]->GetColor() << endl;
         }
         while (true) {
             if (((clock() - startTime) / (double) CLOCKS_PER_SEC) >= (double) tmax)
@@ -436,11 +557,14 @@ public:
                         colorationOrder[i]->SetLabelBrelaz(0);
                     }
                     back = true;
+                    // cout << endl << endl << "---------------HAGO BACK POR"
+                    //          " SOL COMPLETA-------------------" << endl <<endl;
                 } else {
                     back = false;
                 }
             } else {
                 back = true;
+                // cout << "hago back porque me quedé sin colores " << k << endl;
             }
             if (back) {
                 Label(colorationOrder[k - 1], k - 1);
@@ -491,6 +615,10 @@ private:
     list<GraphNode*> * uncoloredNodes;
 
     list<int> **allowedColors;
+
+    //Arreglo de nodos ordenados de acuerdo a la estrategia greedy
+    //propuesta por Brown
+    GraphNode** greedyOrdering;
 
     //Este método ordena los apuntadores a nodos según su grado (de mayor grado
     //a menor grado)
@@ -548,7 +676,8 @@ private:
         for (int i = 0; i < numNodes; i++)
             adjacentColors[i] = false;
 
-        vector<GraphNode*> * adjacentNodes = adjacencyArray[node_label - 1];
+        vector<GraphNode*> * adjacentNodes =
+                adjacencyArray[greedyOrdering[node_label - 1]-> GetLabel() - 1];
 
         for (unsigned int i = 0; i < adjacentNodes->size(); i++) {
             color = ((*adjacentNodes)[i])->GetColor();
@@ -576,15 +705,16 @@ private:
         bool adjacentColors[numNodes];
         bool * colorMinimo;
         int color = 0;
-        int currentColor = nodesArray[node_label - 1]->GetColor();
+        int currentColor = greedyOrdering[node_label - 1]->GetColor();
 
         for (int i = 0; i < numNodes; i++)
             adjacentColors[i] = false;
 
-        vector<GraphNode*> * adjacentNodes = adjacencyArray[node_label - 1];
+        vector<GraphNode*> * adjacentNodes =
+                adjacencyArray[greedyOrdering[node_label - 1]->GetLabel() - 1];
 
         for (unsigned int i = 0; i < adjacentNodes->size(); i++) {
-            if (((*adjacentNodes)[i])->GetLabel() < node_label) {
+            if ((*adjacentNodes)[i]->GetRank() < node_label - 1) {
                 color = ((*adjacentNodes)[i])->GetColor();
                 if (color > 0)
                     adjacentColors[color - 1] = true;
@@ -605,13 +735,13 @@ private:
 
     int initialColoration() {
         int color = 0;
-        nodesArray[0]->SetColor(1);
+        greedyOrdering[0]->SetColor(1);
         int initialNumColors = 1;
 
         for (int i = 1; i < numNodes; i++) {
             if ((color = GetMinimumFeasibleColor(i + 1)) == 0)
                 throw string("No se pudo completar la coloracion inicial");
-            nodesArray[i]->SetColor(color);
+            greedyOrdering[i]->SetColor(color);
             if (color > initialNumColors)
                 initialNumColors = color;
         }
@@ -623,7 +753,7 @@ private:
 
     int findByColor(int color) {
         for (int i = 0; i < numNodes; i++) {
-            if (nodesArray[i]->GetColor() == color)
+            if (greedyOrdering[i]->GetColor() == color)
                 return i + 1;
         }
         throw string("No se encontro el color"
@@ -635,7 +765,7 @@ private:
 
     void resetColoration(int initialPosition) {
         for (int i = initialPosition - 1; i < numNodes; i++) {
-            nodesArray[i]->SetColor(0);
+            greedyOrdering[i]->SetColor(0);
         }
     }
 
@@ -646,7 +776,7 @@ private:
     bool tryNewColor(int nodeLabel, int bestNumColors) {
         int alternativeColor = GetMinimumAlternativeColor(nodeLabel);
         if (alternativeColor < bestNumColors) {
-            setColor(nodeLabel, alternativeColor);
+            greedyOrdering[nodeLabel - 1]->SetColor(alternativeColor);
             return true;
         }
         return false;
@@ -667,13 +797,13 @@ private:
                 throw string("No se pudo completar la coloracion");
             if (color >= *bestNumColors)
                 break;
-            nodesArray[i]->SetColor(color);
+            greedyOrdering[i]->SetColor(color);
         }
         if (i == numNodes) {
             int max = 0;
             int currentColor;
             for (int j = 0; j < numNodes; j++) {
-                currentColor = nodesArray[j]->GetColor();
+                currentColor = greedyOrdering[j]->GetColor();
                 if (currentColor > max)
                     max = currentColor;
             }
@@ -691,7 +821,7 @@ private:
 
     void copyNodesArray() {
         for (int i = 0; i < numNodes; i++) {
-            *(finalColorationBrown[i]) = *(nodesArray[i]);
+            *(finalColorationBrown[i]) = *(greedyOrdering[i]);
         }
     }
 
@@ -715,7 +845,7 @@ private:
 
     void copyFinalToNodesArray() {
         for (int i = 0; i < numNodes; i++) {
-            *(nodesArray[i]) = *(finalColorationBrown[i]);
+            *(greedyOrdering[i]) = *(finalColorationBrown[i]);
         }
     }
 
@@ -838,6 +968,46 @@ private:
                 return i + 1;
             }
         }
+    }
+
+    void initializeBrownGreedyOrderArray() {
+        for (int i = 0; i < numNodes; i++) {
+            //greedyOrdering[i] = nodesDegreeSortedArray[i];
+            greedyOrdering[i] = nodesArray[i];
+            greedyOrdering[i]->SetRank(i);
+        }
+        //        int bestNumConnected;
+        //        int numConnected;
+        //        for (int i = 1; i < numNodes; i++) {
+        //            bestNumConnected = -1;
+        //            for (int j = i; j < numNodes; j++) {
+        //                numConnected = 0;
+        //                for (int k = 0; k < i; k++) {
+        //                    if (isAdyacent(greedyOrdering[k], greedyOrdering[j]))
+        //                        numConnected++;
+        //                }
+        //                if (numConnected > bestNumConnected) {
+        //                    swap(greedyOrdering, j, i);
+        //                    bestNumConnected = numConnected;
+        //                } else if (numConnected == bestNumConnected) {
+        //                    if ((greedyOrdering[i]->GetDegree()) < (greedyOrdering[j]->GetDegree()))
+        //                        swap(greedyOrdering, j, i);
+        //                }
+        //            }
+        //            greedyOrdering[i]->SetRank(i);
+        //        }
+    }
+
+    void swap(GraphNode** nodesArray, int indexNode1, int indexNode2) {
+        GraphNode* temp = nodesArray[indexNode1];
+        nodesArray[indexNode1] = nodesArray[indexNode2];
+        nodesArray[indexNode2] = temp;
+    }
+
+    void printNodesArray(GraphNode** array, int size) {
+        for (int i = 0; i < size; i++)
+            cout << "Nodo " << i + 1 << ": " <<
+                array[i]->GetLabel() << " " << array[i]->GetDegree() << endl;
     }
 
 };

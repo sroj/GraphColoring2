@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   GraphNode.h
  * Author: simonr
  *
@@ -15,7 +15,8 @@
 class GraphNode {
 public:
 
-    GraphNode() : color(0), saturationDegree(0), degree(0), label(0), in_clique(false), label_brelaz(0) {
+    GraphNode() : color(0), saturationDegree(0), degree(0), label(0),
+    in_clique(false), label_brelaz(0), rank(0) {
     };
 
     //Copy constructor
@@ -64,21 +65,29 @@ public:
     void SetLabel(int label) {
         this->label = label;
     }
-    
+
     void SetLabelBrelaz(int label) {
         this->label_brelaz = label;
     }
-    
+
     int GetLabelBrelaz() const {
         return label_brelaz;
     }
-    
-    void SetInClique(bool in){
+
+    void SetInClique(bool in) {
         this->in_clique = in;
     }
-    
-    bool GetInClique(){
+
+    bool GetInClique() {
         return in_clique;
+    }
+
+    int GetRank() const {
+        return rank;
+    }
+
+    void SetRank(int rank) {
+        this->rank = rank;
     }
 
     //Operador ++
@@ -102,10 +111,12 @@ private:
 
     //Etiqueta del nodo
     int label;
-    
+
     bool in_clique;
-    
+
     int label_brelaz;
+
+    int rank;
 };
 #endif	/* GRAPHNODE_H */
 

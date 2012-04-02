@@ -58,7 +58,7 @@
           <developmentMode>5</developmentMode>
         </cTool>
         <ccTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -71,7 +71,7 @@
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="profile" type="1">
+    <conf name="Profile" type="1">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
@@ -79,6 +79,7 @@
       <compileType>
         <ccTool>
           <developmentMode>0</developmentMode>
+          <commandlineTool>g++</commandlineTool>
           <commandLine>-pg</commandLine>
         </ccTool>
         <linkerTool>
