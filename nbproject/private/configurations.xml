@@ -24,18 +24,18 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel5.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel6.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel7.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen5_5.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen7_7.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z 32</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z huck.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z games120.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen6_6.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen8_12.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z simon</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen8_.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen8_.12col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen8_12.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen7_7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen5_5.col</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -z queen8_12.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -b queen5_5.col</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>
@@ -67,11 +67,52 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -d </runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel4.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z myciel5.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -z simon</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen8_12.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen5_5.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen7_7.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b myciel4.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b myciel3.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b myciel5.col</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen6_6.col</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -d g-20-d-0.7.col</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -b queen6_6.col</runcommand>
+        <rundir></rundir>
+        <buildfirst>true</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+    <conf name="Profile" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen6_6.col</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}" -b queen6_6.col</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
