@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/gcs2
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=graphcoloring2.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/graphcoloring2.tar
+# Profile configuration
+CND_PLATFORM_Profile=GNU-Linux-x86
+CND_ARTIFACT_DIR_Profile=dist/Profile/GNU-Linux-x86
+CND_ARTIFACT_NAME_Profile=gcs2
+CND_ARTIFACT_PATH_Profile=dist/Profile/GNU-Linux-x86/gcs2
+CND_PACKAGE_DIR_Profile=dist/Profile/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Profile=graphcoloring2.tar
+CND_PACKAGE_PATH_Profile=dist/Profile/GNU-Linux-x86/package/graphcoloring2.tar
 #
 # include compiler specific variables
 #
