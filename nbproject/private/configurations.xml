@@ -26,7 +26,6 @@
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z huck.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z games120.col</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen6_6.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z queen8_12.col</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -z simon</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -b queen8_.col</runcommandpicklistitem>
