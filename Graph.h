@@ -236,12 +236,12 @@ public:
 
     void printOutput(ostream& output, double time) {
         output.precision(8);
-        output << "-----------------------------------";
-        output << "\nTIEMPO DE EJECUCION: " << fixed << time << endl;
+        output << "-----------------------------------" << endl;
+        output << "TIEMPO DE EJECUCION: " << fixed << time << endl;
         output << "NUMERO DE COLORES ENCONTRADOS: " << getNumberOfColors()
                 << endl;
-        output << "COLORACION ENCONTRADA:\n";
-        output << "Vertice\tColor\n";
+        output << "COLORACION ENCONTRADA:" << endl;
+        output << "Vertice\tColor" << endl;
 
         for (int i = 0; i < numNodes; i++) {
             output << i + 1 << "\t" << nodesArray[i]->GetColor() << endl;
