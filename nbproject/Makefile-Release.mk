@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Graph.o \
-	${OBJECTDIR}/GraphNode.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/GraphNode.o \
 	${OBJECTDIR}/batch.o \
 	${OBJECTDIR}/CompareLabelFunctor.o \
 	${OBJECTDIR}/CompareDegreeFunctor.o
@@ -71,15 +71,15 @@ ${OBJECTDIR}/Graph.o: Graph.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Graph.o Graph.cpp
 
-${OBJECTDIR}/GraphNode.o: GraphNode.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/GraphNode.o GraphNode.cpp
-
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/GraphNode.o: GraphNode.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/GraphNode.o GraphNode.cpp
 
 ${OBJECTDIR}/batch.o: batch.cpp 
 	${MKDIR} -p ${OBJECTDIR}
