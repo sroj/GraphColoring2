@@ -16,6 +16,8 @@
       <itemPath>CompareDegreeFunctor.h</itemPath>
       <itemPath>CompareLabelFunctor.cpp</itemPath>
       <itemPath>CompareLabelFunctor.h</itemPath>
+      <itemPath>CompareUnusedAttFunctor.cpp</itemPath>
+      <itemPath>CompareUnusedAttFunctor.h</itemPath>
       <itemPath>Graph.cpp</itemPath>
       <itemPath>Graph.h</itemPath>
       <itemPath>GraphNode.cpp</itemPath>
