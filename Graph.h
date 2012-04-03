@@ -351,9 +351,11 @@ public:
     //ejecución del algoritmo, o -1 en caso de que se agote el tiempo máximo.
 
     double Brown(int tmax) {
+        int bestPartialNumColors[numNodes];
         clock_t startTime = clock();
         int nodeLabel = numNodes;
-        int bestNumColors = initialColoration();
+        int bestNumColors = initialColoration(bestPartialNumColors);
+
         bool backtracking = false;
 
         while (nodeLabel >= 1) {
@@ -371,7 +373,8 @@ public:
             }
 
             resetColoration(nodeLabel + 1);
-            nodeLabel = colorForward(nodeLabel + 1, &bestNumColors);
+            nodeLabel = colorForward(nodeLabel + 1, &bestNumColors,
+                    bestPartialNumColors);
 
             if (nodeLabel == numNodes) {
                 backtracking = false;
@@ -440,7 +443,6 @@ public:
                 return i + 1;
             }
         }
-
     }
 
     double Brelaz(int tmax, Graph& grafo2) {
@@ -633,58 +635,56 @@ private:
             return 0;
     }
 
-    //Metodo para el algoritmo de Brown.
-    //Busca el color minimo factible, mayor a su color actual, para el nodo con
-    //etiqueta node_label.
-
-    int GetMinimumAlternativeColor(int node_label) {
+    void GetFeasibleColorsBrown(int node_label, int best_num_colors) {
         if (node_label <= 0 || node_label > numNodes) {
-            throw string("Etiqueta de nodo invalida en"
-                    "Graph::GetMinimumAlternativeColor");
+            throw string("Etiqueta de nodo invalida en Graph::GetMinimumFeasibleColor");
         }
 
-        bool adjacentColors[numNodes];
-        bool * colorMinimo;
-        int color = 0;
-        int currentColor = greedyOrdering[node_label - 1]->GetColor();
-
-        for (int i = 0; i < numNodes; i++)
-            adjacentColors[i] = false;
+        int color;
+        list<int> * nodeAllowedColors = allowedColors[node_label - 1];
+        bool used_colors[best_num_colors - 1];
+        for (int i = 0; i < best_num_colors - 1; i++)
+            used_colors[i] = false;
 
         vector<GraphNode*> * adjacentNodes =
-                adjacencyArray[greedyOrdering[node_label - 1]->GetLabel() - 1];
+                adjacencyArray[greedyOrdering[node_label - 1]-> GetLabel() - 1];
 
         for (unsigned int i = 0; i < adjacentNodes->size(); i++) {
-            if ((*adjacentNodes)[i]->GetRank() < node_label - 1) {
-                color = ((*adjacentNodes)[i])->GetColor();
-                if (color > 0)
-                    adjacentColors[color - 1] = true;
-            }
+            color = ((*adjacentNodes)[i])->GetColor();
+            if (((*adjacentNodes)[i]->GetRank() < node_label - 1) && color > 0)
+                used_colors[color - 1] = true;
         }
 
-        if ((colorMinimo =
-                find(adjacentColors + currentColor,
-                adjacentColors + numNodes, false))
-                < adjacentColors + numNodes)
-            return colorMinimo - adjacentColors + 1;
-        else
-            return 0;
+        nodeAllowedColors->clear();
+        for (int i = 0; i < best_num_colors - 1; i++)
+            if (used_colors[i] == false)
+                nodeAllowedColors->push_back(i + 1);
     }
 
     //Asigna una coloracion inicial factible al grafo, que será empleada en el
     //algoritmo de Brown
 
-    int initialColoration() {
+    int initialColoration(int bestPartialNumColors[]) {
         int color = 0;
         greedyOrdering[0]->SetColor(1);
+        bestPartialNumColors[0] = 1;
+
         int initialNumColors = 1;
 
         for (int i = 1; i < numNodes; i++) {
-            if ((color = GetMinimumFeasibleColor(i + 1)) == 0)
+            GetFeasibleColorsBrown(i + 1, numNodes + 1);
+            if (allowedColors[i]->empty())
                 throw string("No se pudo completar la coloracion inicial");
+            //CUIDADO
+            color = allowedColors[i]->front();
+            allowedColors[i]->pop_front();
             greedyOrdering[i]->SetColor(color);
             if (color > initialNumColors)
                 initialNumColors = color;
+            if (color > bestPartialNumColors[i - 1])
+                bestPartialNumColors[i] = color;
+            else
+                bestPartialNumColors[i] = bestPartialNumColors[i - 1];
         }
         copyNodesArray();
         return initialNumColors;
@@ -715,10 +715,14 @@ private:
     //bestNumColors, pasado como parametro
 
     bool tryNewColor(int nodeLabel, int bestNumColors) {
-        int alternativeColor = GetMinimumAlternativeColor(nodeLabel);
-        if (alternativeColor < bestNumColors) {
-            greedyOrdering[nodeLabel - 1]->SetColor(alternativeColor);
-            return true;
+        int alternativeColor;
+        if (!(allowedColors[nodeLabel - 1]->empty())) {
+            alternativeColor = allowedColors[nodeLabel - 1]->front();
+            allowedColors[nodeLabel - 1]->pop_front();
+            if (alternativeColor < bestNumColors) {
+                greedyOrdering[nodeLabel - 1]->SetColor(alternativeColor);
+                return true;
+            }
         }
         return false;
     }
@@ -730,25 +734,29 @@ private:
     //exitosamente, actualiza el valor del parametro bestNumColors, para reflejar
     //que se encontro una nueva y mejor solución.
 
-    int colorForward(int nodeLabel, int* bestNumColors) {
+    int colorForward(int node_label, int* bestNumColors, int bestPartialNumColors[]) {
         int color = 0;
         int i;
-        for (i = nodeLabel - 1; i < numNodes; i++) {
-            if ((color = GetMinimumFeasibleColor(i + 1)) == 0)
-                throw string("No se pudo completar la coloracion");
-            if (color >= *bestNumColors)
+        int solutionNumColors = bestPartialNumColors[node_label - 2];
+
+        for (i = node_label - 1; i < numNodes; i++) {
+            GetFeasibleColorsBrown(i + 1, *bestNumColors);
+            if (allowedColors[i]->empty())
                 break;
+
+            color = allowedColors[i]->front();
+            allowedColors[i]->pop_front();
             greedyOrdering[i]->SetColor(color);
+            if (color > solutionNumColors)
+                solutionNumColors = color;
+            if (color > bestPartialNumColors[i - 1])
+                bestPartialNumColors[i] = color;
+            else
+                bestPartialNumColors[i] = bestPartialNumColors[i - 1];
         }
+
         if (i == numNodes) {
-            int max = 0;
-            int currentColor;
-            for (int j = 0; j < numNodes; j++) {
-                currentColor = greedyOrdering[j]->GetColor();
-                if (currentColor > max)
-                    max = currentColor;
-            }
-            *bestNumColors = max;
+            *bestNumColors = solutionNumColors;
             copyNodesArray();
             return numNodes;
         }
@@ -766,7 +774,6 @@ private:
         }
     }
 
-
     //Metodo helper para el algoritmo de Brelaz.
     //Copia el contenido del arreglo de nodos principal (nodesArray), al
     //arreglo finalColorationBrown, para almacenar un nueva mejor solucion
@@ -778,7 +785,6 @@ private:
         }
     }
 
-
     //Metodo helper para el algoritmo de Brown.
     //Copia el contenido del arreglo finalColorationBrown, al
     //arreglo nodesArray, para almacenar la mejor solucion final encontrada por
@@ -789,7 +795,6 @@ private:
             *(greedyOrdering[i]) = *(finalColorationBrown[i]);
         }
     }
-
 
     //Metodo helper para el algoritmo de Brown.
     //Copia el contenido del arreglo finalColorationBrown, al
@@ -881,9 +886,8 @@ private:
     void printNodesArray(GraphNode** array, int size) {
         for (int i = 0; i < size; i++)
             cout << "Nodo " << i + 1 << ": " <<
-                array[i]->GetLabel() << " " << array[i]->GetDegree() << endl;
+                array[i]->GetLabel() << " " << array[i]->GetColor() << endl;
     }
-
 };
 #endif	/* GRAPH_H */
 

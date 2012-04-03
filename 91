@@ -1,0 +1,15 @@
+c numero: 91
+c nombre: Simon
+c densidad: 0.1
+p edges 7 11
+e 1 2
+e 1 6
+e 2 3
+e 2 6
+e 2 7
+e 4 5
+e 4 7
+e 5 6
+e 5 7
+e 6 7
+e 3 7
