@@ -89,6 +89,7 @@ public:
     void SetRank(int rank) {
         this->rank = rank;
     }
+    
 
     //Operador ++
     //Se redefine para que incremente en 1 el grado del nodo
