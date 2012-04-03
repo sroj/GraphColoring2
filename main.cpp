@@ -35,7 +35,7 @@
 //                algoritmo = brelaz;
 //            } else if(strcmp("-k", argv[i]) == 0){
 //                algoritmo = brown_look_ahead;
-//            } 
+//            }
 //            else if (strcmp("-d", argv[i]) != 0) {
 //                cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
 //                return EXIT_FAILURE;
@@ -59,7 +59,7 @@
 //            if (executionTime != -1) {
 //                grafo.printOutput(cout, executionTime);
 //                 cout << grafo.isFactible();
-//                
+//
 //            } else {
 //                cout << "El tiempo de ejecucion permitido fue excedido\n";
 //                return EXIT_FAILURE;
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
                     Graph grafo2(nombreArchivo);
                     executionTime = grafo.Brelaz(tmax, grafo2);
                 } else if (algoritmo = brown_korman) {
-                    executionTime = grafo.BrownLookAhead(tmax);
+                    executionTime = grafo.BrownDynamicReordering(tmax);
                 }
 
                 if (executionTime != -1) {
@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
                 } else {
                     malos++;
                 }
-                
+
                 cant++;
                 if (cant == 3) {
                     ofstream archivoGenerado;

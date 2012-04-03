@@ -1,7 +1,7 @@
 /*
  * File:   Graph.h
  * Author: Simon Rojas & Marlin Aranguren
- * 
+ *
  * Created on March 17, 2012, 9:30 PM
  */
 
@@ -248,7 +248,7 @@ public:
         for (int i = 0; i < numNodes; i++) {
             output << i + 1 << "\t" << nodesArray[i]->GetColor() << endl;
         }
-        output << "-----------------------------------\n";
+        output << "-----------------------------------" << endl;
     }
 
     bool isFactible() {
@@ -837,7 +837,7 @@ private:
         //               colorationOrder[k]=nodesArray[i];
         //               colorationOrder[k]->SetRank(k);
         //               *(finalColorationBrown[k]) = *(grafo2.colorationOrder[k]);
-        //               k++;              
+        //               k++;
         //            }
         //        }
         //        printNodesArray(colorationOrder, numNodes);
