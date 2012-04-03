@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
                 algoritmo = brelaz;
             } else if(strcmp("-k", argv[i]) == 0){
                 algoritmo = brown_look_ahead;
-            } 
+            }
             else if (strcmp("-d", argv[i]) != 0) {
                 cout << "Sintaxis correcta: gsc2 [opciones] <instancia>\n";
                 return EXIT_FAILURE;
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
                 Graph grafo2(argv[argc - 1]);
                 executionTime = grafo.Brelaz(tmax, grafo2);
             } else{
-                executionTime = grafo.BrownLookAhead(tmax);
+                executionTime = grafo.BrownDynamicReordering(tmax);
             }
 
             if (executionTime != -1) {

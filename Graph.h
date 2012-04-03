@@ -523,7 +523,7 @@ public:
         }
     }
 
-    double BrownLookAhead(int tmax) {
+    double BrownDynamicReordering(int tmax) {
 
     }
 
@@ -855,6 +855,7 @@ private:
             greedyOrdering[i] = nodesArray[i];
             greedyOrdering[i]->SetRank(i);
         }
+        //printNodesArray(greedyOrdering, numNodes);
         //        int bestNumConnected;
         //        int numConnected;
         //        for (int i = 1; i < numNodes; i++) {
@@ -886,7 +887,7 @@ private:
     void printNodesArray(GraphNode** array, int size) {
         for (int i = 0; i < size; i++)
             cout << "Nodo " << i + 1 << ": " <<
-                array[i]->GetLabel() << " " << array[i]->GetColor() << endl;
+                array[i]->GetLabel() << " " << array[i]->GetDegree() << endl;
     }
 };
 #endif	/* GRAPH_H */
