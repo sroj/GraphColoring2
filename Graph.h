@@ -251,6 +251,19 @@ public:
         output << "-----------------------------------\n";
     }
 
+    bool isFactible() {
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                if (i != j) {
+                    if (isAdyacent(nodesArray[i], nodesArray[j]) && nodesArray[i]->GetColor() == nodesArray[j]->GetColor()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     //Este método retorna un apuntador a un vector que contiene apuntadores a
     //el/los nodo(s) no coloreados con grado de saturación máxima. Para ello
     //revisa en la lista unconloredNodes cuál es el máximo grado de saturación
@@ -485,8 +498,7 @@ public:
                 colorationOrder[k - 1]->SetColor(minimumFeasibleColor);
                 if (minimumFeasibleColor > maximalActualColoration[k - 2]) {
                     maximalActualColoration[k - 1] = minimumFeasibleColor;
-                }
-                else{
+                } else {
                     maximalActualColoration[k - 1] = maximalActualColoration[k - 2];
                 }
                 k++;
@@ -809,19 +821,27 @@ private:
     }
 
     void setColorationOrderBrelaz(Graph& grafo2, int w) {
-        for (int i = 0; i < w; i++) {
+        //        for (int i = 0; i < w; i++) {
+        //            colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
+        //            colorationOrder[i]->SetRank(i);
+        //            *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
+        //        }
+        //        int k = w;
+        //        for(int i=0; i<numNodes; i++){
+        //            if(!(nodesArray[i]->GetInClique())){
+        //               colorationOrder[k]=nodesArray[i];
+        //               colorationOrder[k]->SetRank(k);
+        //               *(finalColorationBrown[k]) = *(grafo2.colorationOrder[k]);
+        //               k++;              
+        //            }
+        //        }
+        //        printNodesArray(colorationOrder, numNodes);
+        for (int i = 0; i < numNodes; i++) {
             colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
             colorationOrder[i]->SetRank(i);
             *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
         }
-        int k = w;
-        for(int i=0; i<numNodes; i++){
-            if(!(nodesArray[i]->GetInClique())){
-               colorationOrder[k]=nodesArray[i];
-               *(finalColorationBrown[k]) = *(grafo2.colorationOrder[k]);
-               k++;              
-            }
-        }
+
     }
 
     int getNumberOfColorsActual(int k) {
@@ -899,7 +919,7 @@ private:
     void printNodesArray(GraphNode** array, int size) {
         for (int i = 0; i < size; i++)
             cout << "Nodo " << i + 1 << ": " <<
-                array[i]->GetLabel() << " " << array[i]->GetDegree() << endl;
+                array[i]->GetLabel() << " " << array[i]->GetDegree() << " " << array[i]->GetRank() << endl;
     }
 
 };
