@@ -237,16 +237,16 @@ public:
     void printOutput(ostream& output, double time) {
         output.precision(8);
         output << "-----------------------------------";
-        output << "\nTIEMPO DE EJECUCION: " << fixed << time << "\n";
+        output << "\nTIEMPO DE EJECUCION: " << fixed << time << endl;
         output << "NUMERO DE COLORES ENCONTRADOS: " << getNumberOfColors()
-                << "\n";
+                << endl;
         output << "COLORACION ENCONTRADA:\n";
         output << "Vertice\tColor\n";
 
         for (int i = 0; i < numNodes; i++) {
-            output << i + 1 << "\t" << nodesArray[i]->GetColor() << "\n";
+            output << i + 1 << "\t" << nodesArray[i]->GetColor() << endl;
         }
-        output << "-----------------------------------\n";
+        output << "-----------------------------------" << endl;
     }
 
     //Este método retorna un apuntador a un vector que contiene apuntadores a
