@@ -16,7 +16,7 @@ class GraphNode {
 public:
 
     GraphNode() : color(0), saturationDegree(0), degree(0), label(0),
-    in_clique(false), label_brelaz(0), rank(0) {
+    in_clique(false), label_brelaz(0), rank(0), unusedAttributes(0) {
     };
 
     //Copy constructor
@@ -89,7 +89,16 @@ public:
     void SetRank(int rank) {
         this->rank = rank;
     }
-    
+
+    int GetUnusedAttributes() const {
+        return unusedAttributes;
+    }
+
+    void SetUnusedAttributes(int unusedAttributes) {
+        this->unusedAttributes = unusedAttributes;
+    }
+
+
 
     //Operador ++
     //Se redefine para que incremente en 1 el grado del nodo
@@ -118,6 +127,8 @@ private:
     int label_brelaz;
 
     int rank;
+
+    int unusedAttributes;
 };
 #endif	/* GRAPHNODE_H */
 

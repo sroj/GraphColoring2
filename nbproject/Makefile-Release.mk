@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Graph.o \
+	${OBJECTDIR}/CompareUnusedAttFunctor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/GraphNode.o \
 	${OBJECTDIR}/CompareLabelFunctor.o \
@@ -69,6 +70,11 @@ ${OBJECTDIR}/Graph.o: Graph.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Graph.o Graph.cpp
+
+${OBJECTDIR}/CompareUnusedAttFunctor.o: CompareUnusedAttFunctor.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CompareUnusedAttFunctor.o CompareUnusedAttFunctor.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

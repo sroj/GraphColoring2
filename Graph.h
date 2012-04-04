@@ -9,6 +9,7 @@
 #define	GRAPH_H
 
 #include <list>
+#include <queue>
 #include <vector>
 #include <iostream>
 #include <ostream>
@@ -542,6 +543,15 @@ public:
         }
     }
 
+    int initialColorationDynamic(int bestPartialNumColors[]) {
+
+    }
+
+    int colorForwardDynamic(int node_label, int* bestNumColors,
+            int bestPartialNumColors[]) {
+
+    }
+
     double BrownDynamicReordering(int tmax) {
 
     }
@@ -659,15 +669,23 @@ private:
             return 0;
     }
 
-    void GetFeasibleColorsBrown(int node_label, int best_num_colors) {
+    void GetFeasibleColorsBrown(int node_label, int best_num_colors,
+            int best_num_colors_partial_solution) {
         if (node_label <= 0 || node_label > numNodes) {
             throw string("Etiqueta de nodo invalida en Graph::GetMinimumFeasibleColor");
         }
 
+        int min;
+        if (best_num_colors_partial_solution + 1 < best_num_colors - 1)
+            min = best_num_colors_partial_solution + 1;
+        else
+            min = best_num_colors - 1;
+
+
         int color;
         list<int> * nodeAllowedColors = allowedColors[node_label - 1];
-        bool used_colors[best_num_colors - 1];
-        for (int i = 0; i < best_num_colors - 1; i++)
+        bool used_colors[min];
+        for (int i = 0; i < min; i++)
             used_colors[i] = false;
 
         vector<GraphNode*> * adjacentNodes =
@@ -675,12 +693,13 @@ private:
 
         for (unsigned int i = 0; i < adjacentNodes->size(); i++) {
             color = ((*adjacentNodes)[i])->GetColor();
-            if (((*adjacentNodes)[i]->GetRank() < node_label - 1) && color > 0)
+            if (((*adjacentNodes)[i]->GetRank() < node_label - 1) && color > 0
+                    && color - 1 < min)
                 used_colors[color - 1] = true;
         }
 
         nodeAllowedColors->clear();
-        for (int i = 0; i < best_num_colors - 1; i++)
+        for (int i = 0; i < min; i++)
             if (used_colors[i] == false)
                 nodeAllowedColors->push_back(i + 1);
     }
@@ -696,7 +715,8 @@ private:
         int initialNumColors = 1;
 
         for (int i = 1; i < numNodes; i++) {
-            GetFeasibleColorsBrown(i + 1, numNodes + 1);
+            GetFeasibleColorsBrown(i + 1, numNodes + 1,
+                    bestPartialNumColors[i - 1]);
             if (allowedColors[i]->empty())
                 throw string("No se pudo completar la coloracion inicial");
             //CUIDADO
@@ -764,7 +784,8 @@ private:
         int solutionNumColors = bestPartialNumColors[node_label - 2];
 
         for (i = node_label - 1; i < numNodes; i++) {
-            GetFeasibleColorsBrown(i + 1, *bestNumColors);
+            GetFeasibleColorsBrown(i + 1, *bestNumColors,
+                    bestPartialNumColors[i - 1]);
             if (allowedColors[i]->empty())
                 break;
 
@@ -877,11 +898,11 @@ private:
 
     void initializeBrownGreedyOrderArray() {
         for (int i = 0; i < numNodes; i++) {
-            //greedyOrdering[i] = nodesDegreeSortedArray[i];
+            //            greedyOrdering[i] = nodesDegreeSortedArray[i];
             greedyOrdering[i] = nodesArray[i];
             greedyOrdering[i]->SetRank(i);
         }
-        //printNodesArray(greedyOrdering, numNodes);
+        //        printNodesArray(greedyOrdering, numNodes);
         //        int bestNumConnected;
         //        int numConnected;
         //        for (int i = 1; i < numNodes; i++) {
