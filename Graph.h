@@ -251,19 +251,6 @@ public:
         output << "-----------------------------------" << endl;
     }
 
-    bool isFactible() {
-        for (int i = 0; i < numNodes; i++) {
-            for (int j = 0; j < numNodes; j++) {
-                if (i != j) {
-                    if (isAdyacent(nodesArray[i], nodesArray[j]) && nodesArray[i]->GetColor() == nodesArray[j]->GetColor()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     //Este método retorna un apuntador a un vector que contiene apuntadores a
     //el/los nodo(s) no coloreados con grado de saturación máxima. Para ello
     //revisa en la lista unconloredNodes cuál es el máximo grado de saturación
@@ -303,7 +290,112 @@ public:
         return max;
     }
 
+    //Ejecuta el algoritmo de coloracion de Brown sobre el grafo.
+    //Recibe un parametro que indica el tiempo maximo, en segundos, durante el
+    //el cual se permitira la ejecución del método. Retorna el tiempo de
+    //ejecución del algoritmo, o -1 en caso de que se agote el tiempo máximo.
 
+    double Brown(int tmax) {
+        int bestPartialNumColors[numNodes];
+        clock_t startTime = clock();
+        int nodeLabel = numNodes;
+        int bestNumColors = initialColoration(bestPartialNumColors);
+
+        bool backtracking = false;
+
+        while (nodeLabel >= 1) {
+            //Terminar la ejecucion del metodo si se excede del tiempo máximo
+            if (((clock() - startTime) / (double) CLOCKS_PER_SEC) >= (double) tmax)
+                return -1;
+
+            if (!backtracking)
+                nodeLabel = findByColor(bestNumColors) - 1;
+
+            if (!tryNewColor(nodeLabel, bestNumColors)) {
+                nodeLabel--;
+                backtracking = true;
+                continue;
+            }
+
+            resetColoration(nodeLabel + 1);
+            nodeLabel = colorForward(nodeLabel + 1, &bestNumColors,
+                    bestPartialNumColors);
+
+            if (nodeLabel == numNodes) {
+                backtracking = false;
+            } else {
+                backtracking = true;
+            }
+        }
+
+        copyFinalToNodesArray();
+        return (clock() - startTime) / (double) CLOCKS_PER_SEC;
+    }
+
+    // Esta función obtiene una clique a partir de un order de coloración
+    // establecido por el algoritmo Dsatur. Esta es una clique maximal aproximada
+    // los nodos de esta clique son almacenados en una lista y luego retornados.
+
+    list<GraphNode*> GetClique(Graph& grafo2) {
+        list<GraphNode*> clique;
+        for (int i = 0; i < numNodes; i++) {
+            clique.push_back(nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]);
+            nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]->SetInClique(true);
+            if (grafo2.colorationOrder[i + 1]->GetColor() <= grafo2.colorationOrder[i]->GetColor()) {
+                break;
+            }
+        }
+        return clique;
+    }
+
+    // Esta función recibe dos nodos y revisa si son adyacentes, de ser así 
+    // retorna verdadero de lo contrario retorna falso.
+
+    bool isAdyacent(GraphNode* node1, GraphNode* node2) {
+        const vector<GraphNode*>* adjacents = neighbors(node1->GetLabel());
+        int nodeLabel = node2->GetLabel();
+        for (int i = 0; i < adjacents->size(); i++) {
+            if ((*adjacents)[i]->GetLabel() == nodeLabel) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Este procedimiento se utiliza para el algoritmo de Brélaz, recibe el nodo
+    // xk a partir del cual se quiere realizar el procediemiento, su posición en 
+    // el orden de coloración y el número de colores de la solución parcial 
+    // hasta el nodo anterior a xk en el orden de coloración. El método etiqueta
+    // los nodos adyacentes a xk, que tengan menor rank  en el orden y que no 
+    // estén etiquetados. Si hay varios que cumplen las características y que 
+    // tienen el mismo color, etiqueta el de menor rank. 
+
+    void Label(GraphNode* node_xk, int position, int numColors) {
+        bool usedColors[numColors];
+        for (int i = 0; i < numColors; i++) {
+            usedColors[i] = false;
+        }
+
+        for (int i = 0; i < position; i++) {
+            if (colorationOrder[i]->GetLabelBrelaz() == 0 && isAdyacent(node_xk, colorationOrder[i])) {
+                if (usedColors[colorationOrder[i]->GetColor() - 1] == false) {
+                    colorationOrder[i]->SetLabelBrelaz(position + 1);
+                    usedColors[colorationOrder[i]->GetColor() - 1] = true;
+                }
+            }
+        }
+    }
+
+    //Retorna la posición teórica del nodo etiquetado con mayor rank en el orden
+    // de coloración.
+
+    int maximalRankLabeled(int k) {
+        for (int i = k; i >= 0; i--) {
+            if (colorationOrder[i]->GetLabelBrelaz() != 0) {
+                return i + 1;
+            }
+        }
+    }
 
     //Esta función recibe el tiempo máximo de ejecución del algoritmo Dsatur.
     //Retorna un double que representa el tiempo que se tardó el algoritmo en
@@ -360,104 +452,13 @@ public:
         return (double) (endTime - startTime) / (double) CLOCKS_PER_SEC;
     }
 
-    //Ejecuta el algoritmo de coloracion de Brown sobre el grafo.
-    //Recibe un parametro que indica el tiempo maximo, en segundos, durante el
-    //el cual se permitira la ejecución del método. Retorna el tiempo de
-    //ejecución del algoritmo, o -1 en caso de que se agote el tiempo máximo.
-
-    double Brown(int tmax) {
-        int bestPartialNumColors[numNodes];
-        clock_t startTime = clock();
-        int nodeLabel = numNodes;
-        int bestNumColors = initialColoration(bestPartialNumColors);
-
-        bool backtracking = false;
-
-        while (nodeLabel >= 1) {
-            //Terminar la ejecucion del metodo si se excede del tiempo máximo
-            if (((clock() - startTime) / (double) CLOCKS_PER_SEC) >= (double) tmax)
-                return -1;
-
-            if (!backtracking)
-                nodeLabel = findByColor(bestNumColors) - 1;
-
-            if (!tryNewColor(nodeLabel, bestNumColors)) {
-                nodeLabel--;
-                backtracking = true;
-                continue;
-            }
-
-            resetColoration(nodeLabel + 1);
-            nodeLabel = colorForward(nodeLabel + 1, &bestNumColors,
-                    bestPartialNumColors);
-
-            if (nodeLabel == numNodes) {
-                backtracking = false;
-            } else {
-                backtracking = true;
-            }
-        }
-
-        copyFinalToNodesArray();
-        return (clock() - startTime) / (double) CLOCKS_PER_SEC;
-    }
-
-    list<GraphNode*> GetClique(Graph& grafo2) {
-        list<GraphNode*> clique;
-        for (int i = 0; i < numNodes; i++) {
-            clique.push_back(nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]);
-            nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1]->SetInClique(true);
-            if (grafo2.colorationOrder[i + 1]->GetColor() <= grafo2.colorationOrder[i]->GetColor()) {
-                break;
-            }
-        }
-        return clique;
-    }
-
-    bool hasLowerRank(GraphNode* node, int k) {
-        int nodeLabel = node->GetLabel();
-        for (int i = 0; i < k; i++) {
-            if ((colorationOrder[i]->GetLabel()) == nodeLabel) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool isAdyacent(GraphNode* node1, GraphNode* node2) {
-        const vector<GraphNode*>* adjacents = neighbors(node1->GetLabel());
-        int nodeLabel = node2->GetLabel();
-        for (int i = 0; i < adjacents->size(); i++) {
-            if ((*adjacents)[i]->GetLabel() == nodeLabel) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void Label(GraphNode* node_xk, int position, int numColors) {
-        bool usedColors[numColors];
-        for (int i = 0; i < numColors; i++) {
-            usedColors[i] = false;
-        }
-
-        for (int i = 0; i < position; i++) {
-            if (colorationOrder[i]->GetLabelBrelaz() == 0 && isAdyacent(node_xk, colorationOrder[i])) {
-                if (usedColors[colorationOrder[i]->GetColor() - 1] == false) {
-                    colorationOrder[i]->SetLabelBrelaz(position + 1);
-                    usedColors[colorationOrder[i]->GetColor() - 1] = true;
-                }
-            }
-        }
-    }
-
-    int maximalRankLabeled(int k) {
-        for (int i = k; i >= 0; i--) {
-            if (colorationOrder[i]->GetLabelBrelaz() != 0) {
-                return i + 1;
-            }
-        }
-    }
+    // Esta función ejecuta el algoritmo de Brélaz, que busca una coloración 
+    // óptima, realizando una modificación al algoritmo de brown que le permita
+    // colorear primero una clique maximal aproximada y además que acote los
+    // colores según una cota superior establecida por la Eurística Dsatur.
+    // recibe un grafo al cual se le aplica Dsatur para calcular la clique y la 
+    // cota superior y el tiempo máximo de ejecución. Retorna el tiempo de 
+    // ejecución si el algoritmo no excedió el tmax y -1 en caso contrario.  
 
     double Brelaz(int tmax, Graph& grafo2) {
         double t = grafo2.Dsatur(tmax);
@@ -575,6 +576,7 @@ private:
     //Lista de nodos aún no coloreados por el algoritmo dsatur
     list<GraphNode*> * uncoloredNodes;
 
+    //Arreglo de listas de colores permitidos para cada nodo
     list<int> **allowedColors;
 
     //Arreglo de nodos ordenados de acuerdo a la estrategia greedy
@@ -609,6 +611,10 @@ private:
             adjacencyArray[i] = new vector<GraphNode*>;
         }
     }
+
+    //Este método se utiliza para inicializar el arreglo de allowedColors,
+    //asignándole un vector a cada posición, donde estarán contenidos apuntadores
+    //a los nodos adyacentes al i-ésimo nodo.
 
     void initializeAllowedColors() {
         for (int i = 0; i < numNodes; i++) {
@@ -825,39 +831,24 @@ private:
         }
     }
 
+    // Establece un orden de coloración para el algoritmo de Brélaz, basado en
+    // el orden en el que se colorearon los nodos en la ejecución del algoritmo 
+    // Dsatur.
+
     void setColorationOrderBrelaz(Graph& grafo2, int w) {
-        //        for (int i = 0; i < w; i++) {
-        //            colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
-        //            colorationOrder[i]->SetRank(i);
-        //            *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
-        //        }
-        //        int k = w;
-        //        for(int i=0; i<numNodes; i++){
-        //            if(!(nodesArray[i]->GetInClique())){
-        //               colorationOrder[k]=nodesArray[i];
-        //               colorationOrder[k]->SetRank(k);
-        //               *(finalColorationBrown[k]) = *(grafo2.colorationOrder[k]);
-        //               k++;
-        //            }
-        //        }
-        //        printNodesArray(colorationOrder, numNodes);
         for (int i = 0; i < numNodes; i++) {
             colorationOrder[i] = nodesArray[grafo2.colorationOrder[i]->GetLabel() - 1];
             colorationOrder[i]->SetRank(i);
             *(finalColorationBrown[i]) = *(grafo2.colorationOrder[i]);
         }
-
     }
 
-    int getNumberOfColorsActual(int k) {
-        int max = 0;
-        for (int i = 0; i < k; i++) {
-            if (colorationOrder[i]->GetColor() > max) {
-                max = colorationOrder[i]->GetColor();
-            }
-        }
-        return max;
-    }
+    // Este método busca los colores permitidos para el node_xk tomando en 
+    // cuenta como cota superior el min(uk, q), estos colores los almacena en el
+    // arreglo de allowedColors en la lista correspondiente al nodo en la posi-
+    // ción teórica k en el orden de coloración. Recibe el nodo, uk = número de  
+    // colores de la solución parcial hasta k-1, q que es la mínima cantidad de 
+    // colores encontrada en una solución completa hasta el momento y el k  
 
     void GetFeasibleColors(GraphNode* node_xk, int uk, int q, int k) {
         int min;
@@ -870,8 +861,6 @@ private:
         for (int i = 0; i < min; i++) {
             usedColors[i] = false;
         }
-
-
         const vector<GraphNode*> *adyacents = neighbors(node_xk->GetLabel());
         int rank_xk = node_xk->GetRank();
         for (int i = 0; i < adyacents->size(); i++) {
@@ -879,7 +868,6 @@ private:
                 usedColors[(*adyacents)[i]->GetColor() - 1] = true;
             }
         }
-        //allowedColors[k - 1]->clear();
         for (int i = 0; i < min; i++) {
             if (usedColors[i] == false) {
                 allowedColors[k - 1]->push_back(i + 1);
